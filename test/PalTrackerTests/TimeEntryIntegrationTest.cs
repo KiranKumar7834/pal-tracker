@@ -17,27 +17,27 @@ namespace PalTrackerTests
 
         public TimeEntryIntegrationTest()
         {
-			
+            Environment.SetEnvironmentVariable("MYSQL__CLIENT__CONNECTIONSTRING", DbTestSupport.TestDbConnectionString);
+            DbTestSupport.ExecuteSql("TRUNCATE TABLE time_entries");
             _testClient = IntegrationTestServer.Start().CreateClient();
-			Environment.SetEnvironmentVariable("MYSQL__CLIENT__CONNECTIONSTRING", DbTestSupport.TestDbConnectionString);
-			DbTestSupport.ExecuteSql("TRUNCATE TABLE time_entries");
+			
         }
 
-        //[Fact]
-        //public void Read()
-        //{
-        //    var id = CreateTimeEntry(new TimeEntry(999, 1010,  new DateTime(2015, 10, 10), 9));
+        [Fact]
+        public void Read()
+        {
+            var id = CreateTimeEntry(new TimeEntry(999, 1010, new DateTime(2015, 10, 10), 9));
 
-        //    var response = _testClient.GetAsync($"/time-entries/{id}").Result;
-        //    var responseBody = JObject.Parse(response.Content.ReadAsStringAsync().Result);
+            var response = _testClient.GetAsync($"/time-entries/{id}").Result;
+            var responseBody = JObject.Parse(response.Content.ReadAsStringAsync().Result);
 
-        //    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        //    Assert.Equal(id, responseBody["id"].ToObject<long>());
-        //    Assert.Equal(999, responseBody["projectId"].ToObject<long>());
-        //    Assert.Equal(1010, responseBody["userId"].ToObject<long>());
-        //    Assert.Equal("10/10/2015 00:00:00", responseBody["date"].ToObject<string>());
-        //    Assert.Equal(9, responseBody["hours"].ToObject<int>());
-        //}
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal(id, responseBody["id"].ToObject<long>());
+            Assert.Equal(999, responseBody["projectId"].ToObject<long>());
+            Assert.Equal(1010, responseBody["userId"].ToObject<long>());
+            Assert.Equal("10/10/2015 00:00:00", responseBody["date"].ToObject<string>());
+            Assert.Equal(9, responseBody["hours"].ToObject<int>());
+        }
 
         [Fact]
         public void Create()
@@ -55,29 +55,29 @@ namespace PalTrackerTests
             Assert.Equal(24, responseBody["hours"].ToObject<int>());
         }
 
-        //[Fact]
-        //public void List()
-        //{
-        //    var id1 = CreateTimeEntry(new TimeEntry(222, 333,  new DateTime(2008, 01, 08), 24));
-        //    var id2 = CreateTimeEntry(new TimeEntry(444, 555,  new DateTime(2008, 02, 10), 6));
+        [Fact]
+        public void List()
+        {
+            var id1 = CreateTimeEntry(new TimeEntry(222, 333, new DateTime(2008, 01, 08), 24));
+            var id2 = CreateTimeEntry(new TimeEntry(444, 555, new DateTime(2008, 02, 10), 6));
 
-        //    var response = _testClient.GetAsync("/time-entries").Result;
-        //    var responseBody = JArray.Parse(response.Content.ReadAsStringAsync().Result);
+            var response = _testClient.GetAsync("/time-entries").Result;
+            var responseBody = JArray.Parse(response.Content.ReadAsStringAsync().Result);
 
-        //    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        //    Assert.Equal(id1, responseBody[0]["id"].ToObject<int>());
-        //    Assert.Equal(222, responseBody[0]["projectId"].ToObject<long>());
-        //    Assert.Equal(333, responseBody[0]["userId"].ToObject<long>());
-        //    Assert.Equal("01/08/2008 00:00:00", responseBody[0]["date"].ToObject<string>());
-        //    Assert.Equal(24, responseBody[0]["hours"].ToObject<int>());
+            Assert.Equal(id1, responseBody[0]["id"].ToObject<int>());
+            Assert.Equal(222, responseBody[0]["projectId"].ToObject<long>());
+            Assert.Equal(333, responseBody[0]["userId"].ToObject<long>());
+            Assert.Equal("01/08/2008 00:00:00", responseBody[0]["date"].ToObject<string>());
+            Assert.Equal(24, responseBody[0]["hours"].ToObject<int>());
 
-        //    Assert.Equal(id2, responseBody[1]["id"].ToObject<int>());
-        //    Assert.Equal(444, responseBody[1]["projectId"].ToObject<long>());
-        //    Assert.Equal(555, responseBody[1]["userId"].ToObject<long>());
-        //    Assert.Equal("02/10/2008 00:00:00", responseBody[1]["date"].ToObject<string>());
-        //    Assert.Equal(6, responseBody[1]["hours"].ToObject<int>());
-        //}
+            Assert.Equal(id2, responseBody[1]["id"].ToObject<int>());
+            Assert.Equal(444, responseBody[1]["projectId"].ToObject<long>());
+            Assert.Equal(555, responseBody[1]["userId"].ToObject<long>());
+            Assert.Equal("02/10/2008 00:00:00", responseBody[1]["date"].ToObject<string>());
+            Assert.Equal(6, responseBody[1]["hours"].ToObject<int>());
+        }
 
         [Fact]
         public void Update()
